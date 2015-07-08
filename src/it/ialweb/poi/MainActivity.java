@@ -1,7 +1,15 @@
 package it.ialweb.poi;
 
+import java.util.Random;
+
+import it.ialweb.poi.database.DatabaseInstance;
+import it.ialweb.poi.fragment.DialogTweet;
+import it.ialweb.poi.fragment.FragmentTimeLine;
+import it.ialweb.poi.fragment.FragmentUser;
+
+
+import it.ialweb.poi.tweet.MessageTweet;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -17,8 +25,11 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.firebase.client.Firebase;
+
 public class MainActivity extends AppCompatActivity {
 
+	protected static final String DIALOG_TWEET = "tweet";
 	private TabLayout tabLayout;
 	private ViewPager viewPager;
 
@@ -27,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+		Firebase.setAndroidContext(this);
+		
 		setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 
 		tabLayout = (TabLayout) findViewById(R.id.tabLayout);
@@ -43,7 +56,17 @@ public class MainActivity extends AppCompatActivity {
 
 			@Override
 			public Fragment getItem(int position) {
-				return new PlaceHolder();
+				switch (position) {
+				case 0:
+					return FragmentTimeLine.getInstance();
+				case 2:
+					return FragmentUser.getInstance();
+
+				default:
+					return new PlaceHolder();
+				
+				}
+				
 			}
 
 			@Override
@@ -58,9 +81,19 @@ public class MainActivity extends AppCompatActivity {
 		findViewById(R.id.fabBtn).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Snackbar.make(findViewById(R.id.coordinator), "abcdefg", Snackbar.LENGTH_LONG).show();
+				DialogTweet.getInstance().show(getFragmentManager(), DIALOG_TWEET);
 			}
 		});
+
+		findViewById(R.id.fabBtnLogOut).setOnClickListener(
+				new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+
+						//DatabaseInstance.getInstance().logout();
+						DatabaseInstance.getInstance().tweet(new MessageTweet("Tweet sistema" + new Random().nextInt(1000)));
+					}
+				});
 	}
 
 	public static class PlaceHolder extends Fragment {
