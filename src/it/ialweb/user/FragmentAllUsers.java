@@ -1,7 +1,8 @@
-package it.ialweb.poi.fragment;
+package it.ialweb.user;
 
 import it.ialweb.poi.R;
 import it.ialweb.poi.database.DatabaseInstance;
+import it.ialweb.poi.fragment.FragmentTimeLine;
 import it.ialweb.poi.tweet.MessageTweet;
 import it.ialweb.poi.tweet.MyRecyclerAdapterTweet;
 
@@ -9,30 +10,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.firebase.client.ChildEventListener;
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.FirebaseError;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class FragmentTimeLine extends Fragment implements ChildEventListener {
+import com.firebase.client.ChildEventListener;
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.FirebaseError;
+
+public class FragmentAllUsers extends Fragment implements ChildEventListener {
 	
-	private List<MessageTweet> tweetItemList;
+	private List<User> userItemList;
 
     private RecyclerView recyclerView;
 
-    private MyRecyclerAdapterTweet adapter;
-
-
-	public static FragmentTimeLine getInstance() {
-		return new FragmentTimeLine();
+	public static FragmentAllUsers getInstance() {
+		return new FragmentAllUsers();
 	}
 
 	@Override
@@ -40,7 +37,7 @@ public class FragmentTimeLine extends Fragment implements ChildEventListener {
 			Bundle savedInstanceState) {
 		//View view = inflater.inflate(R.layout.fragment_timeline, null);
 		
-		tweetItemList = new ArrayList<MessageTweet>();
+		userItemList = new ArrayList<User>();
 		
 	    recyclerView = new RecyclerView(getActivity());
 
@@ -53,7 +50,7 @@ public class FragmentTimeLine extends Fragment implements ChildEventListener {
 		recyclerView.setLayoutManager(layoutManager);
 		recyclerView.setPadding(0, 0, 0, (int) getResources().getDimension(R.dimen.list_padding_top));
 		
-		DatabaseInstance.getInstance().getTweets(this);
+		DatabaseInstance.getInstance().getAllUsers(this);
 
 		return recyclerView;
 	}
@@ -66,27 +63,15 @@ public class FragmentTimeLine extends Fragment implements ChildEventListener {
 
 	@Override
 	public void onChildAdded(DataSnapshot dataSnapshot, String previousChild) {
+		
 		 Map<String, Object> value = (Map<String, Object>)dataSnapshot.getValue();
-		    Long date = (Long)value.get("date");
-		    String tweet = (String)value.get("tweet");
-		    String user = (String)value.get("uidUser");
+		    String uid = (String)value.get("uid");
+		    String user = (String)value.get("email");
 		    
-		    MessageTweet messageTweet = new MessageTweet(tweet);
-		    messageTweet.setUidUser(user);
-		    tweetItemList.add(messageTweet);
+		    User u = new User(user, uid);
+		    userItemList.add(u);
 		    
-		    recyclerView.setAdapter(new MyRecyclerAdapterTweet(getActivity(), tweetItemList));
-		/*for (DataSnapshot election : dataSnapshot.getChildren()) {
-			 Map<String, Object> value = (Map<String, Object>)election.getValue();
-		    Long date = (Long)value.get("date");
-		    String tweet = (String)value.get("tweet");
-		    String user = (String)value.get("uidUser");
-		    
-		    MessageTweet messageTweet = new MessageTweet(tweet, date);
-		    messageTweet.setUidUser(user);
-		    tweetItemList.add(messageTweet);
-		}
-		recyclerView.setAdapter(new MyRecyclerAdapterTweet(getActivity(), tweetItemList));*/
+		    recyclerView.setAdapter(new MyRecyclerAdapterUser(getActivity(), userItemList));
 	}
 
 	@Override

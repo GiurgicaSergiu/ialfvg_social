@@ -60,6 +60,18 @@
             </LinearLayout>
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <ImageView
+                android:id="@+id/imgFavorites"
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
+                android:src="@drawable/starnormal" />
+
+        </LinearLayout>
+
         <TextView
             android:id="@+id/txtDate"
             android:layout_width="match_parent"

@@ -14,6 +14,7 @@ public class MessageTweetHolder extends RecyclerView.ViewHolder {
     protected TextView tweet;
     protected TextView date;
     protected LinearLayout llLayout;
+    protected ImageView imgFavorites;
 
     public MessageTweetHolder(View view) {
         super(view);
@@ -22,6 +23,7 @@ public class MessageTweetHolder extends RecyclerView.ViewHolder {
         this.tweet = (TextView) view.findViewById(R.id.txtTweet);
         this.date = (TextView) view.findViewById(R.id.txtDate);
         this.llLayout = (LinearLayout) view.findViewById(R.id.llTweets);
+        this.imgFavorites = (ImageView) view.findViewById(R.id.imgFavorites);
     }
 
 }

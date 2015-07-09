@@ -2,6 +2,7 @@ package it.ialweb.poi.database;
 
 
 import it.ialweb.poi.tweet.MessageTweet;
+import it.ialweb.user.User;
 
 import java.util.Map;
 
@@ -33,7 +34,13 @@ public class DatabaseInstance {
 	}
 	
 	public void createUser(String userEmail,String userPassword,ValueResultHandler<Map<String, Object>> handler){
+
 		myFirebaseRef.createUser(userEmail, userPassword, handler);
+	}
+	
+	public void saveUser(){
+		User user = new User(getUserEmail(),myFirebaseRef.getAuth().getUid());
+		myFirebaseRef.child("users/"+user.getUid()).setValue(user);
 	}
 	
 	public void login(String userEmail,String userPassword,AuthResultHandler handler){
@@ -65,5 +72,34 @@ public class DatabaseInstance {
 		Query queryRef = firebaseTweet.orderByChild("Date");
 		
 		queryRef.addChildEventListener(listener);
+	}
+	
+	public void getMyTweets(ChildEventListener listener){
+		Firebase firebaseTweet = myFirebaseRef.child("tweets");
+		String s = myFirebaseRef.getAuth().getUid();
+		Query queryRef = firebaseTweet.orderByChild("uidUser").equalTo(s);
+		
+		queryRef.addChildEventListener(listener);
+	}
+	
+	public void setFavorites(MessageTweet tweet){
+		Firebase firebaseTweet = myFirebaseRef.child(myFirebaseRef.getAuth().getUid() + "Favorites");
+		firebaseTweet.push().setValue(tweet);
+	}
+	
+	public void getAllUsers(ChildEventListener listener){
+		Firebase firebaseTweet = myFirebaseRef.child("users");
+		
+		Query queryRef = firebaseTweet.orderByChild("email");
+		
+		queryRef.addChildEventListener(listener);
+	}
+	
+	public void saveFollow(User user){	
+		myFirebaseRef.child("Follow/" + myFirebaseRef.getAuth().getUid() + "/" + user.getUid()).setValue(user);
+	}
+	public void saveFollowers(User user){
+		User u = new User(getUserEmail(),myFirebaseRef.getAuth().getUid());
+		myFirebaseRef.child("Followers/" + user.getUid()+ "/" + myFirebaseRef.getAuth().getUid()).setValue(u);
 	}
 }

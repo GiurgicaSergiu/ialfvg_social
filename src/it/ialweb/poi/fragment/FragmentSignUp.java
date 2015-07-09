@@ -8,6 +8,7 @@ import com.firebase.client.FirebaseError;
 
 import it.ialweb.poi.R;
 import it.ialweb.poi.database.DatabaseInstance;
+import it.ialweb.user.User;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -55,7 +56,8 @@ public class FragmentSignUp extends Fragment implements Firebase.ValueResultHand
 
 	@Override
 	public void onSuccess(Map<String, Object> arg0) {
-		Snackbar.make(getActivity().findViewById(R.id.coordinator), "Registrazione effettuata", Snackbar.LENGTH_LONG).show();	
+		Snackbar.make(getActivity().findViewById(R.id.coordinator), "Registrazione effettuata", Snackbar.LENGTH_LONG).show();
+		
 		getActivity().onBackPressed();
 	}
 }

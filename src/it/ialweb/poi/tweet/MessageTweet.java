@@ -29,6 +29,10 @@ public class MessageTweet {
 	public void setUidUser(String uidUser) {
 		this.uidUser = uidUser;
 	}
+
+	public void setDate(long date) {
+		this.date = date;
+	}
 	
 
 }

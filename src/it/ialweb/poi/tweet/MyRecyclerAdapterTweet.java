@@ -1,6 +1,7 @@
 package it.ialweb.poi.tweet;
 
 import it.ialweb.poi.R;
+import it.ialweb.poi.database.DatabaseInstance;
 
 import java.util.Date;
 import java.util.List;
@@ -10,7 +11,9 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 public class MyRecyclerAdapterTweet extends RecyclerView.Adapter<MessageTweetHolder> {
 
@@ -34,7 +37,7 @@ public class MyRecyclerAdapterTweet extends RecyclerView.Adapter<MessageTweetHol
     }
 
     @Override
-    public void onBindViewHolder(MessageTweetHolder tweetHolder, int i) {
+    public void onBindViewHolder(final MessageTweetHolder tweetHolder, final int i) {
  
     	tweetHolder.userName.setText(tweetItemList.get(i).getUidUser());
     	tweetHolder.tweet.setText(tweetItemList.get(i).getTweet());
@@ -48,7 +51,16 @@ public class MyRecyclerAdapterTweet extends RecyclerView.Adapter<MessageTweetHol
 			.setDuration(300).start();
             lastPosition = i;
         }
-		
+
+    	tweetHolder.imgFavorites.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				tweetHolder.imgFavorites.setImageDrawable(mContext.getResources().getDrawable(R.drawable.starpref));
+				DatabaseInstance.getInstance().setFavorites(tweetItemList.get(i));
+				
+			}
+		});
     
     }
 

@@ -4,11 +4,15 @@ import java.util.Random;
 
 import it.ialweb.poi.database.DatabaseInstance;
 import it.ialweb.poi.fragment.DialogTweet;
+import it.ialweb.poi.fragment.FragmentLogin;
 import it.ialweb.poi.fragment.FragmentTimeLine;
 import it.ialweb.poi.fragment.FragmentUser;
 
 
+import it.ialweb.poi.myprofile.ActivityMyProfile;
 import it.ialweb.poi.tweet.MessageTweet;
+import it.ialweb.user.FragmentAllUsers;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -20,6 +24,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -59,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
 				switch (position) {
 				case 0:
 					return FragmentTimeLine.getInstance();
+				case 1:
+					return FragmentAllUsers.getInstance();
 				case 2:
 					return FragmentUser.getInstance();
 
@@ -122,5 +130,32 @@ public class MainActivity extends AppCompatActivity {
 			});
 			return recyclerView;
 		}
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+
+		switch (item.getItemId()) {
+		case R.id.action_logout:
+				DatabaseInstance.getInstance().logout();
+				getSupportFragmentManager().beginTransaction().replace(R.id.fl_user, FragmentLogin.getInstance()).commit();
+				
+			return true;
+
+		case R.id.action_profile:
+			Intent intent = new Intent(MainActivity.this,ActivityMyProfile.class);
+			startActivity(intent);
+		default:
+			break;
+		}
+
+	
+		return super.onOptionsItemSelected(item);
 	}
 }

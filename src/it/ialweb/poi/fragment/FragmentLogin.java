@@ -7,6 +7,7 @@ import com.firebase.client.FirebaseError;
 
 import it.ialweb.poi.R;
 import it.ialweb.poi.database.DatabaseInstance;
+import it.ialweb.user.User;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -49,7 +50,7 @@ public class FragmentLogin extends Fragment implements AuthResultHandler {
 			
 			@Override
 			public void onClick(View v) {
-			getFragmentManager().beginTransaction().add(R.id.fl_user, FragmentSignUp.getInstance()).addToBackStack(FRAGMENT_SIGN_UP).commit();
+			getFragmentManager().beginTransaction().replace(R.id.fl_user, FragmentSignUp.getInstance()).addToBackStack(FRAGMENT_SIGN_UP).commit();
 			}
 		});
 		
@@ -58,7 +59,10 @@ public class FragmentLogin extends Fragment implements AuthResultHandler {
 
 	@Override
 	public void onAuthenticated(AuthData arg0) {
-		Snackbar.make(getActivity().findViewById(R.id.coordinator), "Success", Snackbar.LENGTH_LONG).show();		
+		Snackbar.make(getActivity().findViewById(R.id.coordinator), "Success", Snackbar.LENGTH_LONG).show();	
+		DatabaseInstance.getInstance().saveUser();
+		getFragmentManager().beginTransaction().replace(R.id.fl_user, FragmentUserDetails.getInstance()).commit();
+		
 	}
 
 	@Override
