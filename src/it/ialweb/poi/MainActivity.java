@@ -12,6 +12,7 @@ import it.ialweb.poi.fragment.FragmentUser;
 import it.ialweb.poi.myprofile.ActivityMyProfile;
 import it.ialweb.poi.tweet.MessageTweet;
 import it.ialweb.user.FragmentAllUsers;
+import it.ialweb.user.LoadUser;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
 	protected static final String DIALOG_TWEET = "tweet";
 	private TabLayout tabLayout;
 	private ViewPager viewPager;
+	private Menu myMenu;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
 				case 0:
 					return FragmentTimeLine.getInstance();
 				case 1:
-					return FragmentAllUsers.getInstance();
+					return FragmentAllUsers.getInstance(LoadUser.ALLUSER);
 				case 2:
 					return FragmentUser.getInstance();
 
@@ -93,15 +95,7 @@ public class MainActivity extends AppCompatActivity {
 			}
 		});
 
-		findViewById(R.id.fabBtnLogOut).setOnClickListener(
-				new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-
-						//DatabaseInstance.getInstance().logout();
-						DatabaseInstance.getInstance().tweet(new MessageTweet("Tweet sistema" + new Random().nextInt(1000)));
-					}
-				});
+		
 	}
 
 	public static class PlaceHolder extends Fragment {
@@ -134,7 +128,9 @@ public class MainActivity extends AppCompatActivity {
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+		
 		getMenuInflater().inflate(R.menu.main, menu);
+
 		return true;
 	}
 	
@@ -145,11 +141,15 @@ public class MainActivity extends AppCompatActivity {
 		case R.id.action_logout:
 				DatabaseInstance.getInstance().logout();
 				getSupportFragmentManager().beginTransaction().replace(R.id.fl_user, FragmentLogin.getInstance()).commit();
-				
+				invalidateOptionsMenu();
 			return true;
 
 		case R.id.action_profile:
 			Intent intent = new Intent(MainActivity.this,ActivityMyProfile.class);
+			Bundle bundle = new Bundle();
+			bundle.putString(ActivityMyProfile.UID, DatabaseInstance.getInstance().getUserUid());
+			bundle.putString(ActivityMyProfile.EMAIL, TransformEmail.getNameByEmail(DatabaseInstance.getInstance().getUserEmail()));
+			intent.putExtras(bundle); 
 			startActivity(intent);
 		default:
 			break;
@@ -157,5 +157,14 @@ public class MainActivity extends AppCompatActivity {
 
 	
 		return super.onOptionsItemSelected(item);
+	}
+	
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		
+		super.onPrepareOptionsMenu(menu);
+		menu.findItem(R.id.action_logout).setVisible(DatabaseInstance.getInstance().isLogged());
+		menu.findItem(R.id.action_profile).setVisible(DatabaseInstance.getInstance().isLogged());
+		return true;
 	}
 }

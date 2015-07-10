@@ -10,6 +10,7 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 
 import it.ialweb.poi.R;
+import it.ialweb.poi.TransformEmail;
 import it.ialweb.poi.MainActivity.PlaceHolder;
 import it.ialweb.poi.database.DatabaseInstance;
 import it.ialweb.poi.tweet.MessageTweet;
@@ -29,8 +30,14 @@ import android.widget.TextView;
 
 public class FragmentUserDetails extends Fragment implements ChildEventListener {
 
-	public static FragmentUserDetails getInstance() {
-		return new FragmentUserDetails();
+	private static final String User = "user";
+
+	public static FragmentUserDetails getInstance(String user) {
+		FragmentUserDetails fragmentUserDetails = new FragmentUserDetails();
+		Bundle bundle = new Bundle();
+		bundle.putString(User, user);
+		fragmentUserDetails.setArguments(bundle);
+		return fragmentUserDetails;
 	}
 
 	private List<MessageTweet> tweetItemList;
@@ -62,8 +69,7 @@ public class FragmentUserDetails extends Fragment implements ChildEventListener 
 		
 		
 		
-		
-		DatabaseInstance.getInstance().getMyTweets(this);
+		DatabaseInstance.getInstance().getMyTweets(this, getArguments().getString(User));
 
 		return view;
 	}
@@ -81,9 +87,11 @@ public class FragmentUserDetails extends Fragment implements ChildEventListener 
 		Long date = (Long) value.get("date");
 		String tweet = (String) value.get("tweet");
 		String user = (String) value.get("uidUser");
+		String email = (String) value.get("email");
 
 		MessageTweet messageTweet = new MessageTweet(tweet);
 		messageTweet.setUidUser(user);
+		messageTweet.setEmail(TransformEmail.getNameByEmail(email));
 		tweetItemList.add(messageTweet);
 
 		recyclerView.setAdapter(new MyRecyclerAdapterTweet(getActivity(),

@@ -8,6 +8,7 @@ public class MessageTweet {
 	private String tweet;
 	private String uidUser;
 	private long date;
+	private String Email;
 	
 	public MessageTweet(String tweet) {
 		this.tweet = tweet;
@@ -32,6 +33,14 @@ public class MessageTweet {
 
 	public void setDate(long date) {
 		this.date = date;
+	}
+
+	public String getEmail() {
+		return Email;
+	}
+
+	public void setEmail(String email) {
+		Email = email;
 	}
 	
 

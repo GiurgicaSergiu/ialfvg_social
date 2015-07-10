@@ -5,6 +5,8 @@ import it.ialweb.poi.MainActivity.PlaceHolder;
 import it.ialweb.poi.database.DatabaseInstance;
 import it.ialweb.poi.fragment.FragmentLogin;
 import it.ialweb.poi.fragment.FragmentUserDetails;
+import it.ialweb.user.FragmentAllUsers;
+import it.ialweb.user.LoadUser;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -17,8 +19,13 @@ import android.view.MenuItem;
 public class ActivityMyProfile extends AppCompatActivity {
 
 	protected static final String DIALOG_TWEET = "tweet";
+	public static final String UID = "uid";
+	public static final String EMAIL = "email_user";
 	private TabLayout tabLayout;
 	private ViewPager viewPager;
+	
+	private String userDomain;
+	private String userEmail;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +36,11 @@ public class ActivityMyProfile extends AppCompatActivity {
 
 		tabLayout = (TabLayout) findViewById(R.id.tabLayout);
 		viewPager = (ViewPager) findViewById(R.id.pager);
+		
+		userDomain = getIntent().getExtras().getString(UID);
+		userEmail = getIntent().getExtras().getString(EMAIL);
+		
+		getSupportActionBar().setTitle(userEmail);
 
 		FragmentPagerAdapter adapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
 
@@ -44,7 +56,13 @@ public class ActivityMyProfile extends AppCompatActivity {
 				switch (position) {
 
 				case 0:
-						return FragmentUserDetails.getInstance();
+					return FragmentUserDetails.getInstance(userDomain);
+				case 1:
+					return FragmentAllUsers.getInstance(LoadUser.MYFOLLOWERS,userDomain);
+				case 2:
+					return FragmentAllUsers.getInstance(LoadUser.MYFOLLOWING,userDomain);
+				case 3:
+					return FragmentMyFavorites.getInstance(userDomain);
 				default:
 					return new PlaceHolder();			
 				}

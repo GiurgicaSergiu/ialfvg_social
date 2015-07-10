@@ -28,7 +28,7 @@ public class FragmentUser extends Fragment implements Firebase.ValueResultHandle
 		View view = inflater.inflate(R.layout.fragment_user, null);
 		
 		if(DatabaseInstance.getInstance().isLogged()){
-			getFragmentManager().beginTransaction().replace(R.id.fl_user, FragmentUserDetails.getInstance()).commit();
+			getFragmentManager().beginTransaction().replace(R.id.fl_user, FragmentUserDetails.getInstance(DatabaseInstance.getInstance().getUserUid())).commit();
 			
 		}else {
 			getFragmentManager().beginTransaction().replace(R.id.fl_user, FragmentLogin.getInstance()).commit();

@@ -9,12 +9,12 @@ import android.widget.TextView;
 
 public class MessageTweetHolder extends RecyclerView.ViewHolder {
 	
-    protected ImageView imgUser;
-    protected TextView userName;
-    protected TextView tweet;
-    protected TextView date;
-    protected LinearLayout llLayout;
-    protected ImageView imgFavorites;
+    public ImageView imgUser;
+    public TextView userName;
+    public TextView tweet;
+    public TextView date;
+    public LinearLayout llLayout;
+    public ImageView imgFavorites;
 
     public MessageTweetHolder(View view) {
         super(view);

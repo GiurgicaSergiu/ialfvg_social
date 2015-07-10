@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -25,7 +26,8 @@ public class FragmentLogin extends Fragment implements AuthResultHandler {
 	private Button btnLogin,btnSignUp;
 	
 	public static FragmentLogin getInstance(){
-		return new FragmentLogin();
+		FragmentLogin fragmentLogin = new FragmentLogin();
+		return fragmentLogin;
 	}
 	
 	@Override
@@ -61,7 +63,8 @@ public class FragmentLogin extends Fragment implements AuthResultHandler {
 	public void onAuthenticated(AuthData arg0) {
 		Snackbar.make(getActivity().findViewById(R.id.coordinator), "Success", Snackbar.LENGTH_LONG).show();	
 		DatabaseInstance.getInstance().saveUser();
-		getFragmentManager().beginTransaction().replace(R.id.fl_user, FragmentUserDetails.getInstance()).commit();
+		getFragmentManager().beginTransaction().replace(R.id.fl_user, FragmentUserDetails.getInstance(DatabaseInstance.getInstance().getUserUid())).commit();
+		getActivity().invalidateOptionsMenu();
 		
 	}
 

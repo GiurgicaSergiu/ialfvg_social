@@ -55,6 +55,10 @@ public class DatabaseInstance {
 		myFirebaseRef.unauth();
 	}
 	
+	public String getUserUid(){
+		return myFirebaseRef.getAuth().getUid();
+	}
+	
 	public String getUserEmail(){
 		AuthData authData = myFirebaseRef.getAuth();
 		return (String) authData.getProviderData().get("email");
@@ -62,28 +66,36 @@ public class DatabaseInstance {
 
 	public void tweet(MessageTweet tweet){
 		tweet.setUidUser(myFirebaseRef.getAuth().getUid());
+		tweet.setEmail(getUserEmail());
 		Firebase firebaseTweet = myFirebaseRef.child("tweets");
 		firebaseTweet.push().setValue(tweet);
 	}
 	
+	public void getTweets(ChildEventListener listener,String uid){
+		Firebase firebaseTweet = myFirebaseRef.child("tweets");
+		
+		Query queryRef = firebaseTweet.orderByChild("uidUser").equalTo(uid);
+		
+		queryRef.addChildEventListener(listener);
+	}
 	public void getTweets(ChildEventListener listener){
 		Firebase firebaseTweet = myFirebaseRef.child("tweets");
 		
-		Query queryRef = firebaseTweet.orderByChild("Date");
+		Query queryRef = firebaseTweet.orderByChild("date");
 		
 		queryRef.addChildEventListener(listener);
 	}
 	
-	public void getMyTweets(ChildEventListener listener){
+	public void getMyTweets(ChildEventListener listener,String uid){
 		Firebase firebaseTweet = myFirebaseRef.child("tweets");
-		String s = myFirebaseRef.getAuth().getUid();
+		String s = uid;
 		Query queryRef = firebaseTweet.orderByChild("uidUser").equalTo(s);
 		
 		queryRef.addChildEventListener(listener);
 	}
 	
 	public void setFavorites(MessageTweet tweet){
-		Firebase firebaseTweet = myFirebaseRef.child(myFirebaseRef.getAuth().getUid() + "Favorites");
+		Firebase firebaseTweet = myFirebaseRef.child("Favorites/" + myFirebaseRef.getAuth().getUid());
 		firebaseTweet.push().setValue(tweet);
 	}
 	
@@ -101,5 +113,29 @@ public class DatabaseInstance {
 	public void saveFollowers(User user){
 		User u = new User(getUserEmail(),myFirebaseRef.getAuth().getUid());
 		myFirebaseRef.child("Followers/" + user.getUid()+ "/" + myFirebaseRef.getAuth().getUid()).setValue(u);
+	}
+	
+	public void getMyFollowers(ChildEventListener listener,String uid){
+		Firebase firebaseTweet = myFirebaseRef.child("Follow/"+uid);
+		
+		Query queryRef = firebaseTweet.orderByChild("email");
+		
+		queryRef.addChildEventListener(listener);
+	}
+	
+	public void getMyFollowing(ChildEventListener listener,String uid){
+		Firebase firebaseTweet = myFirebaseRef.child("Followers/"+uid);
+		
+		Query queryRef = firebaseTweet.orderByChild("email");
+		
+		queryRef.addChildEventListener(listener);
+	}
+	
+	public void getMyFavorites(ChildEventListener listener, String uid){
+		Firebase firebaseTweet = myFirebaseRef.child("Favorites/" + uid);
+		
+		Query queryRef = firebaseTweet.orderByChild("Date");
+		
+		queryRef.addChildEventListener(listener);
 	}
 }
